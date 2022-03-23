@@ -1,0 +1,6 @@
+# ninja log v5
+3	13303	1630990515034962129	/mnt/proj58/sjhuang/grounding3d/referit3d/referit3d/external_tools/pointnet2/build/temp.linux-x86_64-3.6/_ext_src/src/ball_query_gpu.o	ecb2facf631f4ea
+5	13484	1630990515226960937	/mnt/proj58/sjhuang/grounding3d/referit3d/referit3d/external_tools/pointnet2/build/temp.linux-x86_64-3.6/_ext_src/src/interpolate_gpu.o	e669b94771c72048
+3	13514	1630990515246960813	/mnt/proj58/sjhuang/grounding3d/referit3d/referit3d/external_tools/pointnet2/build/temp.linux-x86_64-3.6/_ext_src/src/group_points_gpu.o	dd4ffb51c37a817d
+5	14165	1630990515906956717	/mnt/proj58/sjhuang/grounding3d/referit3d/referit3d/external_tools/pointnet2/build/temp.linux-x86_64-3.6/_ext_src/src/sampling_gpu.o	946b5989cc72d0d6
+1	27435	1630990529138874472	/mnt/proj58/sjhuang/grounding3d/referit3d/referit3d/external_tools/pointnet2/build/temp.linux-x86_64-3.6/_ext_src/src/bindings.o	ef554a22183c09db

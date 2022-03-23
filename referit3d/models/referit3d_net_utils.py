@@ -37,7 +37,6 @@ def single_epoch_train(model, data_loader, criteria, optimizer, device, pad_idx,
     :param args:
     :return:
     """
-    # torch.cuda.empty_cache()
 
     metrics = dict()  # holding the losses/accuracies
     total_loss_mtr = AverageMeter()

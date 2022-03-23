@@ -4,6 +4,14 @@
 ## Installation
 Please refer the installation of [referit3d](https://github.com/referit3d/referit3d)
 
+We adopt bert-base-uncased from huggingface, which can be installed using pip as follows:
+```Console
+pip install transformers
+```
+you can download the pretrained weight in [this page](https://huggingface.co/bert-base-uncased/tree/main), and put them in to same folder.
+
+
+
 
 ## Training
 * To train on either Nr3d or Sr3d dataset, use the following commands

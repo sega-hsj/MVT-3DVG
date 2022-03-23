@@ -39,14 +39,6 @@ class PointNetPP(nn.Module):
         self.encoder = nn.ModuleList()
 
         for i in range(n_sa):
-            # self.encoder.append(PointnetSAModule(
-            #     npoint=sa_n_points[i],
-            #     nsample=sa_n_samples[i],
-            #     radius=sa_radii[i],
-            #     mlp=sa_mlps[i],
-            #     bn=bn,
-            #     use_xyz=use_xyz,
-            # ))
             self.encoder.append(PointnetSAModuleMSG(
                 npoint=sa_n_points[i],
                 nsamples=sa_n_samples[i],

@@ -1,6 +1,4 @@
 # Multi-View Transformer for 3D Visual Grounding [CVPR2022]
-
-## MVT
 ![MVT](./MVT.png)
 
 

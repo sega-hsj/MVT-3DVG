@@ -8,7 +8,7 @@ We adopt bert-base-uncased from huggingface, which can be installed using pip as
 ```Console
 pip install transformers
 ```
-you can download the pretrained weight in [this page](https://huggingface.co/bert-base-uncased/tree/main), and put them in to same folder.
+you can download the pretrained weight in [this page](https://huggingface.co/bert-base-uncased/tree/main), and put them into a folder, noted as PATH_OF_BERT.
 
 
 

@@ -184,6 +184,10 @@ if __name__ == '__main__':
                 # lr_scheduler.step(eval_acc)
                 lr_scheduler.step()
 
+                # save the last model
+                save_state_dicts(osp.join(args.checkpoint_dir, 'last_model.pth'),
+                                     epoch, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler)
+
                 if best_test_acc < eval_acc:
                     logger.info(colored('Test accuracy, improved @epoch {}'.format(epoch), 'green'))
                     best_test_acc = eval_acc

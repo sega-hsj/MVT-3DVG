@@ -20,6 +20,7 @@ from referit3d.models.referit3d_net import ReferIt3DNet_transformer
 from referit3d.models.referit3d_net_utils import single_epoch_train, evaluate_on_dataset
 from referit3d.models.utils import load_state_dicts, save_state_dicts
 from referit3d.analysis.deepnet_predictions import analyze_predictions
+from transformers import BertTokenizer, BertModel
 
 
 def log_train_test_information():
@@ -62,7 +63,7 @@ if __name__ == '__main__':
     data_loaders = make_data_loaders(args, referit_data, vocab, class_to_idx, all_scans_in_dict, mean_rgb)
     # Prepare GPU environment
     set_gpu_to_zero_position(args.gpu)  # Pnet++ seems to work only at "gpu:0"
-    # torch.backends.cudnn.benchmark = True
+
     device = torch.device('cuda')
     seed_training_code(args.random_seed)
 
@@ -75,8 +76,6 @@ if __name__ == '__main__':
     class_name_list = []
     for cate in class_to_idx:
         class_name_list.append(cate)
-
-    from transformers import BertTokenizer, BertModel
 
     tokenizer = BertTokenizer.from_pretrained(args.bert_pretrain_path)
     class_name_tokens = tokenizer(class_name_list, return_tensors='pt', padding=True)
@@ -128,7 +127,8 @@ if __name__ == '__main__':
     start_training_epoch = 1
     best_test_acc = -1
     best_test_epoch = -1
-    no_improvement = 0
+    last_test_acc = -1
+    last_test_epoch = -1
 
     if args.resume_path:
         warnings.warn('Resuming assumes that the BEST per-val model is loaded!')
@@ -181,10 +181,12 @@ if __name__ == '__main__':
                 timings['test'] = (toc - tic) / 60
 
                 eval_acc = test_meters['test_referential_acc']
-                # lr_scheduler.step(eval_acc)
+
+                last_test_acc = eval_acc
+                last_test_epoch = epoch
+
                 lr_scheduler.step()
 
-                # save the last model
                 save_state_dicts(osp.join(args.checkpoint_dir, 'last_model.pth'),
                                      epoch, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler)
 
@@ -193,12 +195,9 @@ if __name__ == '__main__':
                     best_test_acc = eval_acc
                     best_test_epoch = epoch
 
-                    # Save the model (overwrite the best one)
                     save_state_dicts(osp.join(args.checkpoint_dir, 'best_model.pth'),
                                      epoch, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler)
-                    no_improvement = 0
                 else:
-                    no_improvement += 1
                     logger.info(colored('Test accuracy, did not improve @epoch {}'.format(epoch), 'red'))
 
                 log_train_test_information()
@@ -210,17 +209,11 @@ if __name__ == '__main__':
 
                 bar.refresh()
 
-                if no_improvement == 100:
-                    logger.warning(colored('Stopping the training @epoch-{} due to lack of progress in test-accuracy '
-                                           'boost (patience hit {} epochs)'.format(epoch, args.patience),
-                                           'red', attrs=['bold', 'underline']))
-                    break
-
         with open(osp.join(args.checkpoint_dir, 'final_result.txt'), 'w') as f_out:
-            msg = ('Best accuracy: {:.4f} (@epoch {})'.format(best_test_acc, best_test_epoch))
-            f_out.write(msg)
+            f_out.write(('Best accuracy: {:.4f} (@epoch {})'.format(best_test_acc, best_test_epoch)))
+            f_out.write(('Last accuracy: {:.4f} (@epoch {})'.format(last_test_acc, last_test_epoch)))
 
-        logger.info('Finished training successfully. Good job!')
+        logger.info('Finished training successfully.')
 
     elif args.mode == 'evaluate':
 

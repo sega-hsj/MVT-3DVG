@@ -32,11 +32,7 @@ class ReferIt3DNet_transformer(nn.Module):
         self.rotate_number = args.rotate_number
         self.view_number = args.view_number
         self.label_lang_sup = args.label_lang_sup
-        self.loss_tem = args.loss_tem
         self.aggregate_type = args.aggregate_type
-        
-        self.use_obj_loss = args.use_obj_loss
-        self.use_lang_loss = args.use_lang_loss
         
         self.drop_rate = 0.15
 
@@ -50,7 +46,6 @@ class ReferIt3DNet_transformer(nn.Module):
         encoder_layer_num = args.encoder_layer_num
         self.language_encoder = BertModel.from_pretrained(args.bert_pretrain_path)
         self.language_encoder.encoder.layer = BertModel(BertConfig()).encoder.layer[:encoder_layer_num]
-        # self.language_encoder.encoder.layer = self.language_encoder.encoder.layer[:encoder_layer_num]
 
         decoder_layer_num = args.decoder_layer_num
         decoder_nhead_num = args.decoder_nhead_num

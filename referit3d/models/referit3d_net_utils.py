@@ -57,8 +57,8 @@ def single_epoch_train(model, data_loader, criteria, optimizer, device, pad_idx,
                 continue
             batch[k] = batch[k].to(device)
 
-        if args.object_encoder == 'pnet':
-            batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
+        # if args.object_encoder == 'pnet':
+        #     batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
 
         lang_tokens = tokenizer(batch['tokens'], return_tensors='pt', padding=True)
         for name in lang_tokens.data:
@@ -131,8 +131,8 @@ def evaluate_on_dataset(model, data_loader, criteria, device, pad_idx, args, ran
                 continue
             batch[k] = batch[k].to(device)
 
-        if args.object_encoder == 'pnet':
-            batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
+        # if args.object_encoder == 'pnet':
+        #     batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
 
         lang_tokens = tokenizer(batch['tokens'], return_tensors='pt', padding=True)
         for name in lang_tokens.data:
@@ -200,8 +200,8 @@ def detailed_predictions_on_dataset(model, data_loader, args, device, FOR_VISUAL
                 continue
             batch[k] = batch[k].to(device)
 
-        if args.object_encoder == 'pnet':
-            batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
+        # if args.object_encoder == 'pnet':
+        #     batch['objects'] = batch['objects'].permute(0, 1, 3, 2)
 
         lang_tokens = tokenizer(batch['tokens'], return_tensors='pt', padding=True)
         for name in lang_tokens.data:

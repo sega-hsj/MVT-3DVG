@@ -22,8 +22,6 @@ def parse_arguments(notebook_options=None):
     """
     parser = argparse.ArgumentParser(description='ReferIt3D Nets + Ablations')
 
-
-    
     #
     # Non-optional arguments
     #
@@ -54,16 +52,6 @@ def parse_arguments(notebook_options=None):
     parser.add_argument('--min-word-freq', type=int, default=3)
     parser.add_argument('--max-test-objects', type=int, default=88)
 
-    parser.add_argument('--bert-pretrain-path', type=str, default="/mnt/proj58/sjhuang/grounding3d/distillbert")
-    parser.add_argument('--loss_tem', type=float, default=1.0)
-    parser.add_argument('--view_number', type=int, default=4)
-    parser.add_argument('--rotate_number', type=int, default=4)
-    parser.add_argument('--label-lang-sup', type=str2bool, default=True)
-    parser.add_argument('--loss-sup', type=str2bool, default=True)
-    parser.add_argument('--aggregate-type', type=str, default='avg')
-    parser.add_argument('--use-obj-loss', type=str2bool, default=True)
-    parser.add_argument('--use-lang-loss', type=str2bool, default=True)
-    
     #
     # Training arguments
     #
@@ -74,33 +62,32 @@ def parse_arguments(notebook_options=None):
     parser.add_argument('--random-seed', type=int, default=2020,
                         help='Control pseudo-randomness (net-wise, point-cloud sampling etc.) fostering reproducibility.')
     parser.add_argument('--init-lr', type=float, default=0.0005, help='learning rate for training.')
-    parser.add_argument('--patience', type=int, default=10, help='if test-acc does not improve for patience consecutive'
-                                                                 'epoch, stop training.')
 
     #
     # Model arguments
     #
-    parser.add_argument('--model', type=str, default='referIt3DNet', choices=['referIt3DNet','referIt3DNet_transformer',
-                                                                              'directObj2Lang',
-                                                                              'referIt3DNetAttentive'])
-    parser.add_argument('--object-latent-dim', type=int, default=768)
-    parser.add_argument('--language-latent-dim', type=int, default=128)
-    parser.add_argument('--word-embedding-dim', type=int, default=64)
-    parser.add_argument('--graph-out-dim', type=int, default=128)
-    parser.add_argument('--dgcnn-intermediate-feat-dim', nargs='+', type=int, default=[128, 128, 128, 128])
+    parser.add_argument('--model', type=str, default='referIt3DNet', choices=['referIt3DNet_transformer',])
+    parser.add_argument('--bert-pretrain-path', type=str, default="/mnt/proj58/sjhuang/grounding3d/distillbert")
+    
+    parser.add_argument('--view_number', type=int, default=4)
+    parser.add_argument('--rotate_number', type=int, default=4)
 
-    parser.add_argument('--object-encoder', type=str, default='pnet_pp', choices=['pnet_pp', 'pnet'])
-    parser.add_argument('--language-fusion', type=str, default='both', choices=['before', 'after', 'both'])
-    parser.add_argument('--word-dropout', type=float, default=0.1)
-    parser.add_argument('--knn', type=int, default=7, help='For DGCNN number of neighbors')
+    parser.add_argument('--label-lang-sup', type=str2bool, default=True)
+    parser.add_argument('--aggregate-type', type=str, default='avg')
+    
+    parser.add_argument('--encoder-layer-num', type=int, default=3)
+    parser.add_argument('--decoder-layer-num', type=int, default=4)
+    parser.add_argument('--decoder-nhead-num', type=int, default=8)
+    
+    parser.add_argument('--object-latent-dim', type=int, default=768)
+    parser.add_argument('--inner-dim', type=int, default=768)
+
+    parser.add_argument('--dropout-rate', type=float, default=0.15)
     parser.add_argument('--lang-cls-alpha', type=float, default=0.5, help='if > 0 a loss for guessing the target via '
                                                                           'language only is added.')
     parser.add_argument('--obj-cls-alpha', type=float, default=0.5, help='if > 0 a loss for guessing for each segmented'
                                                                          ' object its class type is added.')
-    parser.add_argument('--encoder-layer-num', type=int, default=6)
-    parser.add_argument('--decoder-layer-num', type=int, default=6)
-    parser.add_argument('--decoder-nhead-num', type=int, default=12)
-    parser.add_argument('--inner-dim', type=int, default=768)
+
     #
     # Misc arguments
     #

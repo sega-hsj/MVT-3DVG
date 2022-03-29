@@ -85,7 +85,7 @@ if __name__ == '__main__':
     gpu_num = len(args.gpu.strip(',').split(','))
 
     if args.model == 'referIt3DNet_transformer':
-        model = ReferIt3DNet_transformer(args, n_classes, class_name_tokens)
+        model = ReferIt3DNet_transformer(args, n_classes, class_name_tokens, ignore_index=pad_idx)
     else:
         assert False
 

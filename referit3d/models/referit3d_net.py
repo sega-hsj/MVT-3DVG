@@ -29,7 +29,7 @@ class ReferIt3DNet_transformer(nn.Module):
 
         super().__init__()
 
-        self.bert_path = args.bert_pretrain_path
+        self.bert_pretrain_path = args.bert_pretrain_path
 
         self.view_number = args.view_number
         self.rotate_number = args.rotate_number

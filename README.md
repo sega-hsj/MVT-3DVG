@@ -44,7 +44,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 * To evaluate on either Nr3d or Sr3d dataset, use the following commands
 ```Console
     python referit3d/scripts/train_referit3d.py \
-    --mode evaluate
+    --mode evaluate \
     -scannet-file PATH_OF_SCANNET_FILE \
     -referit3D-file PATH_OF_REFERIT3D_FILE \
     --bert-pretrain-path PATH_OF_BERT \

@@ -49,7 +49,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
     -referit3D-file PATH_OF_REFERIT3D_FILE \
     --bert-pretrain-path PATH_OF_BERT \
     --log-dir logs/MVT_nr3d \
-    --resume-path the_path_to_the_model.pth
+    --resume-path the_path_to_the_model.pth \
     --n-workers 8 \
     --model 'referIt3DNet_transformer' \
     --unit-sphere-norm True \

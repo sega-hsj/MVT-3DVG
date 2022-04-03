@@ -3,7 +3,7 @@
 
 
 ## Installation and Data Preparation
-Please refer the installation and data preparation from [referit3d](https://github.com/referit3d/referit3d)
+Please refer the installation and data preparation from [referit3d](https://github.com/referit3d/referit3d).
 
 We adopt bert-base-uncased from huggingface, which can be installed using pip as follows:
 ```Console

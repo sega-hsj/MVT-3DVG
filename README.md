@@ -41,7 +41,8 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 ``` 
 
 ## Validation
-* After each epoch of the training, the program will automatically evalute the performance of the current model. Our code will save the lastest model in the training as **last_model.pth**.
+* After each epoch of the training, the program will automatically evaluate the performance of the current model. Our code will save the last model in the training as **last_model.pth**.
+
 
 
 ## Test

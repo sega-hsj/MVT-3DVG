@@ -41,10 +41,12 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 ``` 
 
 ## Validation
+* After each epoch of the training, 
 
 
 
 ## Test
+
 * To test on either Nr3d or Sr3d dataset, use the following commands
 ```Console
     python referit3d/scripts/train_referit3d.py \

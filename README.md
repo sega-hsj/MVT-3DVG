@@ -46,6 +46,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 
 
 ## Test
+* At test time, the **analyze_predictions** will run following the original code of Referit3D. The **analyze_predictions** will test the model multiple times, each time using a different random seed. With different random seeds, the sampled point clouds of each object are different. The average accuracy and std will be reported. 
 
 * To test on either Nr3d or Sr3d dataset, use the following commands
 ```Console

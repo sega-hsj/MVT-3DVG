@@ -41,8 +41,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 ``` 
 
 ## Validation
-* After each epoch of the training, 
-
+* After each epoch of the training, the program will automatically evalute the performance of the current model.
 
 
 ## Test

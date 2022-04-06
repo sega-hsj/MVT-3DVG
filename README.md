@@ -45,7 +45,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 
 
 ## Test
-* To evaluate on either Nr3d or Sr3d dataset, use the following commands
+* To test on either Nr3d or Sr3d dataset, use the following commands
 ```Console
     python referit3d/scripts/train_referit3d.py \
     --mode evaluate \
@@ -66,7 +66,7 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
     --rotate_number 4 \
     --label-lang-sup True
 ```
-* To evaluate on joint trained model, add the following argument to the above command
+* To test on joint trained model, add the following argument to the above command
 ```Console
     --augment-with-sr3d sr3d_dataset_file.csv
 ``` 

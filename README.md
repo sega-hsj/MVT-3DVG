@@ -76,9 +76,6 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
     --augment-with-sr3d sr3d_dataset_file.csv
 ``` 
 
-## Pre-trained Models
-TODO
-
 
 ## Credits
 The project is built based on the following repository:

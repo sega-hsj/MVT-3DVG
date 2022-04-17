@@ -2,7 +2,7 @@
 [Multi-View Transformer for 3D Visual Grounding](https://arxiv.org/pdf/2204.02174.pdf) *[CVPR 2022]*
 ![MVT](./MVT.png)
 
-For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/MVT_ScanRefer)
+<!-- For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/MVT_ScanRefer) -->
 
 ## Installation and Data Preparation
 Please refer the installation and data preparation from [referit3d](https://github.com/referit3d/referit3d).

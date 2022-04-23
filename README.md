@@ -80,12 +80,14 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/MVT_ScanRefer).
 
 ## Citation
+```
 @article{huang2022multi,
   title={Multi-View Transformer for 3D Visual Grounding},
   author={Huang, Shijia and Chen, Yilun and Jia, Jiaya and Wang, Liwei},
   journal={arXiv preprint arXiv:2204.02174},
   year={2022}
 }
+```
 
 ## Credits
 The project is built based on the following repository:

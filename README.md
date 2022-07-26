@@ -1,5 +1,5 @@
 # Multi-View Transformer for 3D Visual Grounding
-[Multi-View Transformer for 3D Visual Grounding](https://arxiv.org/pdf/2204.02174.pdf) *[CVPR 2022]*
+[Multi-View Transformer for 3D Visual Grounding](https://openaccess.thecvf.com/content/CVPR2022/papers/Huang_Multi-View_Transformer_for_3D_Visual_Grounding_CVPR_2022_paper.pdf) *[CVPR 2022]*
 ![MVT](./MVT.png)
 
 <!-- For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/MVT_ScanRefer) -->
@@ -81,10 +81,11 @@ For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/
 
 ## Citation
 ```
-@article{huang2022multi,
+@inproceedings{huang2022multi,
   title={Multi-View Transformer for 3D Visual Grounding},
   author={Huang, Shijia and Chen, Yilun and Jia, Jiaya and Wang, Liwei},
-  journal={arXiv preprint arXiv:2204.02174},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={15524--15533},
   year={2022}
 }
 ```

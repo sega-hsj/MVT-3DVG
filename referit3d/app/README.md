@@ -49,4 +49,12 @@ srun -p ${PARTITION} --gres=gpu:${NUM_GPUS} python train_model.py --mode evaluat
 Reference-Accuracy: 0.5715
 Object-Clf-Accuracy: 0.6389
 Text-Clf-Accuracy 0.9256
+
+            mean  std
+hard        50.7  0.1
+easy        64.0  0.3
+v-dep       56.6  0.8
+v-indep     57.5  0.2
+all         57.2  0.2
+among-true  66.1  0.3
 ```

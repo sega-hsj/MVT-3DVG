@@ -12,7 +12,7 @@ Extended with the following:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
+import ipdb
 import os
 import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -48,7 +48,7 @@ class _PointnetSAModuleBase(nn.Module):
         new_features : torch.Tensor
             (B, npoint, \sum_k(mlps[k][-1])) tensor of the new_features descriptors
         """
-
+        
         new_features_list = []
 
         xyz_flipped = xyz.transpose(1, 2).contiguous()
@@ -58,9 +58,11 @@ class _PointnetSAModuleBase(nn.Module):
         ).transpose(1, 2).contiguous() if self.npoint is not None else None
 
         for i in range(len(self.groupers)):
+            # ipdb.set_trace()
             new_features = self.groupers[i](
                 xyz, new_xyz, features
             )  # (B, C, npoint, nsample)
+            # ipdb.set_trace()
             new_features = self.mlps[i](
                 new_features
             )  # (B, mlp[-1], npoint, nsample)

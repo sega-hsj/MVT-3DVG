@@ -1,0 +1,5 @@
+arg:
+  scannet_file: /mnt/petrelfs/zhaolin/files/Asrclin/data/scannet/infos/keep_all_points_00_view_with_global_scan_alignment.pkl
+  referit3D_file: /mnt/petrelfs/zhaolin/files/Asrclin/data/scannet/infos/nr3d.csv
+  log_dir: /mnt/petrelfs/zhaolin/projects/3d/MVT-3DVG/output
+  resume_path: None

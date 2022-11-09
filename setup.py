@@ -1,4 +1,15 @@
-from setuptools import setup
+import os
+import subprocess
+
+from setuptools import find_packages, setup
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+
+def make_cuda_ext(name, module, sources):
+    cuda_ext = CUDAExtension(
+        name='%s.%s' % (module, name),
+        sources=[os.path.join(*module.split('.'), src) for src in sources]
+    )
+    return cuda_ext
 
 setup(name='referit3d',
       version='0.1',
@@ -18,7 +29,8 @@ setup(name='referit3d',
                         'termcolor',
                         'tensorboardX',
                         'shapely',
-                        'pyyaml'
+                        'pyyaml',
+                        'easydict'
                         ],
       packages=['referit3d'],
       zip_safe=False)

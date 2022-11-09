@@ -36,6 +36,8 @@ def seed_training_code(manual_seed, strict=False):
     :param manual_seed: (int) random-seed
     :param strict: (boolean) if True, cudnn operates in a deterministic manner
     """
+    strict = True
+    
     random.seed(manual_seed)
     np.random.seed(manual_seed)
     torch.manual_seed(manual_seed)
@@ -158,10 +160,11 @@ def load_json(file_name):
         res = json.load(fin)
     return res
 
-
+# 
 def set_gpu_to_zero_position(real_gpu_loc):
-    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(real_gpu_loc)
+    # os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+    # os.environ["CUDA_VISIBLE_DEVICES"] = str(real_gpu_loc)
+    print(" [CUDA_VISIBLE_DEVICES]  :  ",os.environ["CUDA_VISIBLE_DEVICES"])
 
 
 def create_logger(log_dir, std_out=True):

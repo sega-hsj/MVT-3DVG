@@ -1,6 +1,11 @@
 from torch import nn, Tensor
-from referit3d.external_tools.pointnet2.pointnet2_modules import PointnetSAModule,PointnetSAModuleMSG
-
+try:
+    from referit3d.external_tools.pointnet2.pointnet2_modules import PointnetSAModule,PointnetSAModuleMSG
+    print('[Old code] point_net_pp.py: import pointnet2')
+except Exception as e:
+    from pointnet2_ops.pointnet2_modules import PointnetSAModuleMSG
+    print('[Old code Error] point_net_pp.py: import pointnet2_ops pointnet2 modules')
+import ipdb
 
 def break_up_pc(pc: Tensor) -> [Tensor, Tensor]:
     """
@@ -58,6 +63,7 @@ class PointNetPP(nn.Module):
         xyz, features = break_up_pc(features)
 
         for i in range(len(self.encoder)):
+            # ipdb.set_trace()
             xyz, features = self.encoder[i](xyz, features)
         return self.fc(features.view(features.size(0), -1))
 

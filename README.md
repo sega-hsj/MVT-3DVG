@@ -79,6 +79,11 @@ you can download the pretrained weight in [this page](https://huggingface.co/ber
 
 For ScanRefer dataset, please refer [MVT_ScanRefer](https://github.com/sega-hsj/MVT_ScanRefer).
 
+
+# Update ! Multi-GPU training + Point Transformer 
+- ref [Instructions](referit3d/app/README.md)
+
+
 ## Citation
 ```
 @inproceedings{huang2022multi,

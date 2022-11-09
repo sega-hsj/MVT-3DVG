@@ -8,15 +8,61 @@ from . import DGCNN
 from .utils import get_siamese_features, my_get_siamese_features
 from ..in_out.vocabulary import Vocabulary
 import math
+import ipdb
 try:
     from . import PointNetPP
 except ImportError:
     PointNetPP = None
-
+from easydict import EasyDict
 from transformers import DistilBertTokenizer, DistilBertModel, DistilBertConfig
 from transformers import BertTokenizer, BertModel, BertConfig
 from referit3d.models import MLP
 import time
+from referit3d.models.point_trans import PointTransformer
+
+class PointEncoder(nn.Module):
+    def __init__(self,add_color):
+        super().__init__()
+        
+        self.add_color = add_color
+        if add_color:
+            self.point_encoder = nn.Sequential(
+                    nn.Linear(768, 512),
+                    nn.ReLU(inplace=True),
+                    nn.Dropout(0.5),
+                    nn.Linear(512, 512)
+                )
+            self.color_encoder = PointNetPP(sa_n_points=[32, 16, None],
+                                        sa_n_samples=[[32], [32], [None]],
+                                        sa_radii=[[0.2], [0.4], [None]],
+                                        sa_mlps=[[[3, 64, 64, 128]],
+                                                [[128, 128, 128, 256]],
+                                                [[256, 256, 256, 256]]])
+            self.point_encoder2 = nn.Sequential(
+                    nn.Linear(768, 768),
+                    nn.ReLU(inplace=True),
+                    nn.Dropout(0.5),
+                    nn.Linear(768, 768)
+                )
+        else:
+            self.point_encoder = nn.Sequential(
+                    nn.Linear(768, 768),
+                    nn.ReLU(inplace=True),
+                    nn.Dropout(0.5),
+                    nn.Linear(768, 768)
+                )
+            self.color_encoder = nn.Identity()
+    def forward(self, pt_feats, pt_color=None):
+        # ipdb.set_trace()
+        pt_feats = self.point_encoder(pt_feats)
+
+        if self.add_color and pt_color is not None:
+            color_feats = self.color_encoder(pt_color.contiguous())
+            pt_feats = torch.cat([pt_feats,color_feats],dim=-1)
+            pt_feats = self.point_encoder2(pt_feats)
+
+        return pt_feats
+
 
 
 class ReferIt3DNet_transformer(nn.Module):
@@ -30,6 +76,13 @@ class ReferIt3DNet_transformer(nn.Module):
         super().__init__()
 
         self.bert_pretrain_path = args.bert_pretrain_path
+        self.cfg = dict({
+            'debug_model': args.debug_model,
+            'rank': args.rank,
+            'batch_pnet': args.batch_pnet,
+            'add_color': args.add_color,
+            })
+        print('____ init model: rank = {}'.format(self.cfg['rank']))
 
         self.view_number = args.view_number
         self.rotate_number = args.rotate_number
@@ -48,12 +101,45 @@ class ReferIt3DNet_transformer(nn.Module):
         self.lang_cls_alpha = args.lang_cls_alpha
         self.obj_cls_alpha = args.obj_cls_alpha
 
-        self.object_encoder = PointNetPP(sa_n_points=[32, 16, None],
+        # ADD Point BERT
+        if args.point_trans:
+            print('[Model]: Use Point Transformer Encoder') if args.rank == 0 else None
+            config = EasyDict({
+                'trans_dim': 384,
+                'depth': args.point_trans_depth, # 12个block.
+                'drop_path_rate': 0.1,
+                'cls_dim': 40,
+                'num_heads': 6,
+                'group_size': 32,
+                'num_group': 64,
+                'encoder_dims': 256,
+                'ckpt_path': args.point_tf_ckpt,
+                'cls_head_finetune': args.cls_head_finetune,
+            })
+            self.object_encoder = PointTransformer(config=config)
+            if args.use_pretraining:
+                self.object_encoder.load_model_from_ckpt(config['ckpt_path'],args.rank)
+                print('[Model] load object ckpt')
+            self.point_trans = True
+
+            if args.cls_head_finetune:
+                # self.cls_head_finetune = nn.Sequential(
+                #     nn.Linear(config.trans_dim * 2, 768),
+                #     nn.ReLU(inplace=True),
+                #     nn.Dropout(0.5),
+                #     nn.Linear(768, 768)
+                # )
+                self.cls_head_finetune = PointEncoder(add_color=args.add_color)
+            else:
+                self.cls_head_finetune = nn.Identity()
+        else:
+            self.object_encoder = PointNetPP(sa_n_points=[32, 16, None],
                                         sa_n_samples=[[32], [32], [None]],
                                         sa_radii=[[0.2], [0.4], [None]],
                                         sa_mlps=[[[3, 64, 64, 128]],
                                                 [[128, 128, 128, 256]],
                                                 [[256, 256, self.object_dim, self.object_dim]]])
+            self.point_trans = False
 
         self.language_encoder = BertModel.from_pretrained(self.bert_pretrain_path)
         self.language_encoder.encoder.layer = BertModel(BertConfig()).encoder.layer[:self.encoder_layer_num]
@@ -127,10 +213,23 @@ class ReferIt3DNet_transformer(nn.Module):
         return input_points, boxs
 
     def compute_loss(self, batch, CLASS_LOGITS, LANG_LOGITS, LOGITS, AUX_LOGITS=None):
+        # LOGITS (B,D=52) <--> batch['target_pos'] (B,)
         referential_loss = self.logit_loss(LOGITS, batch['target_pos'])
+        
+        # ipdb.set_trace()
+        # CLASS_LOGITS.transpose(2, 1) (B,C=525,D=52) <--> batch['class_labels'] (B,D)
         obj_clf_loss = self.class_logits_loss(CLASS_LOGITS.transpose(2, 1), batch['class_labels'])
+
+        # LANG_LOGITS (B, C=524) <--> batch['target_class'] (B,)
         lang_clf_loss = self.lang_logits_loss(LANG_LOGITS, batch['target_class'])
+
         total_loss = referential_loss + self.obj_cls_alpha * obj_clf_loss + self.lang_cls_alpha * lang_clf_loss
+        
+        if self.cfg['debug_model']:
+            # print
+            print("rank: {}. refer_loss: {:.2f}. obj_loss: {:.2f}. lang_loss: {:.2f}. all_loss: {:.2f}. ".format(
+                self.cfg['rank'], referential_loss.item(), obj_clf_loss.item(), 
+                lang_clf_loss.item(), total_loss.item()))
         return total_loss
 
     def forward(self, batch: dict, epoch=None):
@@ -140,12 +239,31 @@ class ReferIt3DNet_transformer(nn.Module):
 
         self.device = self.obj_feature_mapping[0].weight.device
 
+        # torch.backends.cudnn.enabled = False
+
         ## rotation augmentation and multi_view generation
         obj_points, boxs = self.aug_input(batch['objects'], batch['box_info'])
         B,N,P = obj_points.shape[:3]
 
         ## obj_encoding
-        objects_features = get_siamese_features(self.object_encoder, obj_points, aggregator=torch.stack)
+        # ipdb.set_trace()
+        if self.point_trans:
+            B, N, K, D = obj_points.shape
+            b_obj_points = obj_points.contiguous().view(-1, K, D)
+            o_obj_features = self.object_encoder(b_obj_points)
+
+            # ipdb.set_trace()
+            if self.cfg['add_color']:
+                o_obj_features = self.cls_head_finetune(o_obj_features,b_obj_points)
+            else:
+                o_obj_features = self.cls_head_finetune(o_obj_features)
+            objects_features = o_obj_features.contiguous().view(B, N, o_obj_features.size(-1))
+            # --> B,N,C=768
+        else:
+            objects_features = get_siamese_features(self.object_encoder, obj_points, 
+                aggregator=torch.stack, batch_pnet=self.cfg['batch_pnet'])
+
+        # torch.backends.cudnn.enabled = True
         
         ## obj_encoding
         obj_feats = self.obj_feature_mapping(objects_features)
